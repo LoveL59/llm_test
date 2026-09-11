@@ -22,26 +22,8 @@ llm_test/
         └── 图片和附件/                  # 文中引用的配图
 ```
 
-## 使用方式
+## 阅读文档
 
-### 1. 启用 Skill
-将 `skills/llm-testing-qa` 复制到用户级 skill 目录即可在 WorkBuddy 中调用：
-
-```bash
-cp -r skills/llm-testing-qa ~/.workbuddy/skills/
-```
-
-### 2. 运行评测脚本
-```bash
-cd skills/llm-testing-qa/scripts
-pip install -r requirements.txt
-# 配置被测模型 API 后执行
-pytest
-# 性能压测（Locust）
-locust -f locustfile.py --headless -u 50 -r 10 -t 1m
-```
-
-### 3. 阅读文档
 - 想系统上手：读 `docs/大模型测试工程师实战手册.md`
 - 想快速查评估框架/数据集：读 `skills/llm-testing-qa/references/verified_frameworks.md`
 - 想了解精简评估知识：读 `docs/大模型评估/大模型评估.md`
