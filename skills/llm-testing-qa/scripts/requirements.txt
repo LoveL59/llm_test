@@ -1,0 +1,25 @@
+# 大模型测试点可执行用例 - 依赖清单
+# 三个评测框架均为 GitHub 高星、社区广泛使用的开源工程；
+# locust / requests 用于性能压测。
+
+# 运行器
+pytest>=8.0
+
+# 轻量 API 模式能力评测（test_01 默认路径）
+openai>=1.0
+requests>=2.31
+
+# 性能压测（locustfile.py）
+locust>=2.0
+
+# 1) 能力评测权威基准模式（EVAL_USE_HARNESS=1）：
+#    EleutherAI/lm-evaluation-harness（HF Open LLM Leaderboard 后端，被 NVIDIA/Cohere 使用）
+lm-eval-harness[api]>=0.4
+
+# 2) RAG 评测（test_02）：RAGAS（Apache-2.0，~14.9k★，业界最主流 RAG 评测）
+ragas>=0.2
+langchain-openai
+datasets
+
+# 3) 生成质量+安全评测（test_03）：DeepEval（~13.7k~17k★，“LLM 评测的 Pytest”）
+deepeval>=4.0
