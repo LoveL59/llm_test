@@ -16,6 +16,7 @@ llm_test/
 │       └── scripts/                    # 可运行评测脚本（conftest + 4 类用例 + Locust 压测 + mock 服务）
 └── docs/
     ├── 大模型测试工程师实战手册.md       # 单篇实战手册：从无到有的大模型测试知识（含 1.13 实战路线图）
+    ├── 自动化测试高频面试题_pytest与playwright.md  # pytest + Playwright 自动化测试面试高频题（含 fixture/conftest 速查）
     └── 大模型评估/                      # 精简评估知识大纲
         ├── 大模型评估.md
         └── 图片和附件/                  # 文中引用的配图
@@ -44,6 +45,7 @@ locust -f locustfile.py --headless -u 50 -r 10 -t 1m
 - 想系统上手：读 `docs/大模型测试工程师实战手册.md`
 - 想快速查评估框架/数据集：读 `skills/llm-testing-qa/references/verified_frameworks.md`
 - 想了解精简评估知识：读 `docs/大模型评估/大模型评估.md`
+- 想复习自动化测试（pytest / Playwright）面试：读 `docs/自动化测试高频面试题_pytest与playwright.md`
 
 ## 引用纪律
 所有框架 / 数据集 / arXiv 编号 / 星标均经联网核实，禁止虚构；版本相关 API（如 RAGAS v0.4）以 `verified_frameworks.md` 与 `executable_templates.md` 标注为准。
