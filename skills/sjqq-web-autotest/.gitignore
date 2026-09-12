@@ -1,0 +1,22 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ===== 运行时生成产物（模板可重新生成，无需入库）=====
+reports/evidence/
+reports/results.json
+reports/run_meta.json
+reports/*.png
+reports/*.log
+cases_loaded.log
+*.log
+
+# ===== 系统与编辑器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

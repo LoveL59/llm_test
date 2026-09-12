@@ -1,0 +1,8 @@
+# 应用宝官网自动化测试依赖（隔离 venv 安装）
+# 版本已锁定为实测通过组合，导入到其他设备可一键复现，无需逐个调试。
+# 浏览器使用本机已装 Google Chrome（channel="chrome"），无需 playwright install chromium。
+playwright==1.62.0
+pytest==9.1.1
+pytest-playwright==0.9.0
+pytest-rerunfailures==16.6.1
+# 报告由 core/report_builder 自研生成（reports/应用宝官网自动化测试报告.html），无需 pytest-html / pytest-metadata。
