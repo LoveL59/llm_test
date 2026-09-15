@@ -101,8 +101,9 @@ assert result.to_pandas()["faithfulness"].mean() >= 0.8
 正确用法（4.1.x，当前 2026）：
 ```python
 from deepeval import assert_test
-from deepeval.metrics import FaithfulnessMetric, AnswerRelevancyMetric, ToxicityMetric
-from deepeval.test_case import LLMTestCase
+from deepeval.metrics import (FaithfulnessMetric, AnswerRelevancyMetric,
+                              HallucinationMetric, ToxicityMetric, GEval)
+from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
 test_case = LLMTestCase(
     input="中国的首都是哪里？",
@@ -117,11 +118,48 @@ assert_test(test_case, [
 ])
 ```
 
+Hallucination（对人工标注的可信基准，区别于 Faithfulness 的检索上下文）：
+```python
+hall_case = LLMTestCase(
+    input="蓝牙开关在哪里？",
+    actual_output="蓝牙开关位于 设置→蓝牙→关闭。",
+    context=["蓝牙开关位于 设置→蓝牙→关闭。"],  # context 不是 retrieval_context
+)
+metric = HallucinationMetric(threshold=0.8)
+metric.measure(hall_case)
+assert metric.score >= 0.8
+```
+
+GEval（LLM-as-a-Judge，自定义 rubric 评判主观质量）：
+```python
+clarity = GEval(
+    name="步骤清晰度",
+    criteria="评估回答是否给出了清晰、可操作的操作指引。",
+    evaluation_steps=[                   # 推荐写法：裁判按步打分，回归更稳定
+        "检查回答是否包含具体操作路径",
+        "检查操作路径是否与 context 一致",
+        "评估语气是否专业、步骤是否简洁",
+    ],
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT,
+                       LLMTestCaseParams.CONTEXT],
+    threshold=0.7,
+)
+assert_test(LLMTestCase(input="帮我关掉蓝牙",
+                        actual_output="已关闭蓝牙。设置→蓝牙→关闭。",
+                        context=["蓝牙开关位于 设置→蓝牙→关闭。"]),
+            [clarity])
+```
+
 易错点：
+- **4.x 统一语义**：5 个指标 score 全部越高越好，threshold 是最低通过线。**Hallucination score = 非幻觉比例（1=完全没幻觉），不是旧版的"越低越好"**。
+- Faithfulness 对 `retrieval_context`（检索上下文，可能含噪），Hallucination 对 `context`（人工标注的可信基准）——面试常考区别。
 - `assert_test` 必须配合**带 `threshold` 的 metric** 才会在不达标时失败；不带阈值的 metric 只打分不拦截。
 - 最新版本 `assert_test` 在 0.21.0+ 行为有变化：保险写法是对关键指标单独 `metric.measure(test_case)` 后 `assert metric.score >= metric.threshold`。
 - 默认裁判用 OpenAI；离线改本地 judge（Ollama 等）按其文档配置，不要硬编码 `OPENAI_API_KEY`。
 - 阈值即质量决策：面向用户内容 faithfulness 建议 ≥ 0.8，不要沿用库默认 0.5。
+- GEval `criteria` 跨次运行有 ±0.05 浮动；回归测试推荐用 `evaluation_steps` 列表，更稳定。
+- 自定义裁判模型：继承 `DeepEvalBaseLLM`，指向任意 OpenAI 兼容端点（DeepSeek / Qwen / Ollama）。
+- LLM-as-a-Judge 已知偏差：位置偏差（交换顺序跑两次）、长度偏差（criteria 加"简洁性"）、自我偏好（校准：抽 50 条人工打分算 Cohen's Kappa，<0.6 需调 rubric）。
 
 ---
 
